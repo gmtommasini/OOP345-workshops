@@ -1,3 +1,6 @@
+#Windows garbage
+*.tmp
+
 # Prerequisites
 *.d
 
@@ -40,6 +43,7 @@ Debug
 
 # My stuff
 reflection.txt
+reflect.txt
 bkp*
 BKP*
 *bkp
