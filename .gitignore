@@ -32,9 +32,14 @@
 *.app
 
 # Visual Studio
+.vscode
 .vs
 *.vcxproj*
 *.sln
 Debug
 
-# Reflection
+# My stuff
+reflection.txt
+bkp*
+BKP*
+*bkp
