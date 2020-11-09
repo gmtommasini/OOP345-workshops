@@ -6,6 +6,7 @@
 #include <list>
 #include <iomanip>
 #include <algorithm>
+#include<numeric>
 #include"util.h"
 
 using namespace std;
@@ -39,6 +40,10 @@ namespace sdds {
 
 		//Song& createSong(string);
 		void display(std::ostream& out) const;//DO NOT USE MANUAL LOOPS
+		void sort();
+		void cleanAlbum();
+		bool inCollection() const;
+		std::list<Song> getSongsForArtist() const;
 
 	};
 

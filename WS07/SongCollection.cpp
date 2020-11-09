@@ -18,7 +18,7 @@ namespace sdds {
 			string line;
 			getline(file, line); //geting one record from file
 			if (file) { //checks if the getline() was successful
-				//util::trim(line); //no trim - pass the white spaces too
+				//util::trim(line); //NO TRIM!!- pass the white spaces too
 				this->songs.push_back(std::move(Song(line)));
 			}
 		}
