@@ -25,14 +25,13 @@ namespace sdds {
 	}
 
 	SongCollection::SongCollection(SongCollection& src) { *this = src; }
-
 	SongCollection::SongCollection(SongCollection&& src) noexcept { *this = std::move(src); }
-
 	SongCollection SongCollection::operator=(SongCollection& src) {
+		this->songs = src.songs;
 		return *this;
 	}
-
 	SongCollection SongCollection::operator=(SongCollection&& src) noexcept {
+		this->songs = std::move(src.songs);
 		return *this;
 	}
 
@@ -43,7 +42,65 @@ namespace sdds {
 
 	void SongCollection::display(std::ostream& out) const {
 		for_each(this->songs.begin(), this->songs.end(),
-			[&](Song s){ out << s; } );
+			[&](Song s){ out << s<<std::endl; } );
+		size_t totalLenght = 0;
+		
+		totalLenght = std::accumulate(	
+			songs.begin(), songs.end(), 0
+			, [](size_t lenght, const Song& s) { 
+				return s.lenght + lenght; 
+			}			
+		);
+		int h = totalLenght / 3600;
+		int m = (totalLenght - h * 3600) / 60;
+		int s = (totalLenght - m * 60) % 60;
+		out << std::setw(89) << std::setfill('-') << "\n" ;
+		out <<"|" << std::setfill(' ') <<std::right << std::setw(80) 
+			<< " Total Listening Time: " + std::to_string(h) + ":"
+			<< std::setw(2) << std::setfill('0') << m << ":" 
+			<< std::setw(2) << std::setfill('0') << s << " |"<<std::endl;
+//		printf("%2d:%2d", m, s); //much easier lol
+	}
+
+	void SongCollection::sort( std::string sortby)	{		//works with vector but not with list
+		bool (*comp[3])(const Song & s1, const Song & s2) = {
+			[](const Song& s1, const Song& s2) {return s1.title < s2.title; },
+			[](const Song& s1, const Song& s2) {return s1.album < s2.album; },
+			[](const Song& s1, const Song& s2) {return s1.lenght < s2.lenght; }
+		};
+		int criteria =-1;
+		if (sortby == "title") criteria = 0;
+		else if (sortby == "album") criteria = 1;
+		else if (sortby == "length") criteria = 2;
+		else throw "Error: unrecognized sort criteria. ";
+		std::sort(songs.begin(), songs.end(), comp[criteria]);
+	}
+
+	void SongCollection::cleanAlbum(){
+		std::vector<Song> temp(this->songs.size());
+		std::transform(
+			songs.begin(), songs.end(), 
+			temp.begin(), 
+			[](Song& s)  { 
+				s.album = s.album !="[None]"? s.album : "";
+				return s;
+			});
+		this->songs = temp;
+	}
+
+	bool SongCollection::inCollection(const std::string artist) const	{		
+		return std::any_of(songs.begin(), songs.end(),			
+			[&](const Song s) { return s.artist == artist; });
+	}
+
+	std::list<Song> SongCollection::getSongsForArtist(const std::string artist) const	{
+		std::list<Song> temp(this->songs.size());
+		auto qnt = std::copy_if(
+			songs.begin(), songs.end(),
+			temp.begin(),
+			[&](const Song s) { return s.artist == artist; });
+		temp.resize(std::distance(temp.begin(), qnt));
+		return temp;
 	}
 
 	std::ostream& operator<<(std::ostream& out, const Song& theSong) {
@@ -54,22 +111,26 @@ namespace sdds {
 			; out << " | " << std::setw(15) << theSong.artist
 			; out << " | " << std::setw(20) << theSong.album
 			; out << " | " << std::setw(6) << right << (theSong.releaseYear > 0 ? to_string(theSong.releaseYear) : "")
-			; out << " | " << theSong.songLength / 60 << ":"
-			; out << std::setw(2) << setfill('0') << theSong.songLength % 60
-			; out << " | " << fixed << std::setprecision(2) << theSong.price
-			; out << " |" << std::endl;
+			; out << " | " << theSong.lenght / 60 << ":"
+			; out << std::setw(2) << setfill('0') << theSong.lenght % 60
+			; out << " | " << fixed << std::setprecision(2) << theSong.m_price
+			; out << " |";
 		return out;
-	}
+	}	
 
+}
+
+
+//Songs
+namespace sdds {
 	Song::Song() {
 		this->album = "";
 		this->artist = "";
-		this->price = { 0 };
+		this->m_price = { 0 };
 		this->releaseYear = { 0 };
-		this->songLength = { 0 };
+		this->lenght = { 0 };
 		this->title = "";
 	}
-
 	Song::Song(string& in) {
 		size_t ipos = 0;
 		title = in.substr(ipos, WSTR);
@@ -84,6 +145,7 @@ namespace sdds {
 
 		album = in.substr(ipos, WSTR);
 		util::trim(album);
+		if (album.empty()) album = "[None]";
 		ipos += WSTR;
 		//cout << album.length();
 
@@ -91,12 +153,13 @@ namespace sdds {
 		catch (...) { releaseYear = 0; }
 		ipos += WNUM;
 
-		try { songLength = std::stoi(in.substr(ipos, WNUM)); }
+		try { lenght = std::stoi(in.substr(ipos, WNUM)); }
 		catch (...) { cout << "ERROR!!"; }
 		ipos += WNUM;
 
-		try { price = std::stod(in.substr(ipos, WNUM)); }
+		try { m_price = std::stod(in.substr(ipos, WNUM)); }
 		catch (...) { cout << "ERROR!!"; }
 	}
+	
 
 }

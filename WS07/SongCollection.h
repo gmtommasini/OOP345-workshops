@@ -1,13 +1,14 @@
 #pragma once
 
-#include<string>
-#include<iostream>
+#include <string>
+#include <iostream>
 #include <fstream>
 #include <list>
+#include <vector>
 #include <iomanip>
 #include <algorithm>
-#include<numeric>
-#include"util.h"
+#include <numeric>
+#include "util.h"
 
 using namespace std;
 
@@ -18,16 +19,17 @@ namespace sdds {
 		string	artist;
 		string	title;
 		string	album;
-		double	price;
+		double	m_price;
 		size_t	releaseYear;
-		size_t	songLength;
+		size_t	lenght;
 
 		Song();
 		Song(string& in);
+		//size_t getLenght(){ return songLength; }
 	};
 
 	class SongCollection {
-		list<Song> songs;
+		vector<Song> songs; //list or vector?
 
 	public:
 		~SongCollection();
@@ -40,11 +42,11 @@ namespace sdds {
 
 		//Song& createSong(string);
 		void display(std::ostream& out) const;//DO NOT USE MANUAL LOOPS
-		void sort();
+		void sort(const std::string);
 		void cleanAlbum();
-		bool inCollection() const;
-		std::list<Song> getSongsForArtist() const;
-
+		bool inCollection(const std::string) const;
+		std::list<Song> getSongsForArtist(const std::string) const;
+		
 	};
 
 	std::ostream& operator<<(std::ostream& out, const Song& theSong);
