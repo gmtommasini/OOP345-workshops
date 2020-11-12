@@ -44,6 +44,20 @@ int main(int argc, char** argv)
 	theCollection.display(std::cout);
 	printbar();
 
+	printHeader("The collection sorted by price");
+	theCollection.sort("price");
+	theCollection.display(std::cout);
+	printbar();
+
+	printHeader("The collection sorted by default");
+	theCollection.sort("other");
+	theCollection.display(std::cout);
+	printbar();
+
+	printHeader("The collection sorted by year");
+	theCollection.sort("year");
+	theCollection.display(std::cout);
+	printbar();
 
 	printHeader("The collection with fixed album names");
 	theCollection.cleanAlbum();

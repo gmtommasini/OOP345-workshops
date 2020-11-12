@@ -1,3 +1,13 @@
+/*
+Guilherme Matsumoto Tommasini
+167561182
+gmatsumoto-tommasini
+gmatsumoto-tommasini@mysenca.ca
+2020/11/1
+
+I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+*/
+
 #pragma once
 
 #include <string>
