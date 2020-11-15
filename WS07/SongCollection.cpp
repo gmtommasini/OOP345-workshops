@@ -52,12 +52,12 @@ namespace sdds {
 		size_t totalLenght = 0;
 		// without the accumulate
 		//for_each(this->songs.begin(), this->songs.end(),
-		//	[&](Song s){ 
+		//	[&](const Song s){ 
 		//		out << s<<std::endl; 
 		//		totalLenght += s.lenght;
 		//	} );
 		for_each(this->songs.begin(), this->songs.end(),
-			[&](Song s) { out << s << std::endl; });
+			[&](const Song s) { out << s << std::endl; });
 
 		//accumulate written for educational purposes
 		totalLenght = std::accumulate(
@@ -121,7 +121,7 @@ namespace sdds {
 	}
 
 	void SongCollection::cleanAlbum() {
-		std::vector<Song> temp(this->songs.size());
+		//std::vector<Song> temp(this->songs.size());
 		std::transform(
 			songs.begin(), songs.end(),
 			songs.begin(),
@@ -133,7 +133,7 @@ namespace sdds {
 
 	bool SongCollection::inCollection(const std::string artist) const {
 		return std::any_of(songs.begin(), songs.end(),
-			[&](const Song s) { return s.artist == artist; });
+			[=](const Song s) { return s.artist == artist; });
 	}
 
 	std::list<Song> SongCollection::getSongsForArtist(const std::string artist) const {
@@ -157,7 +157,6 @@ namespace sdds {
 			; out << " |";
 		return out;
 	}
-
 }
 
 
