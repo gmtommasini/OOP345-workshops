@@ -1,3 +1,13 @@
+/*
+Guilherme Matsumoto Tommasini
+167561182
+gmatsumoto-tommasini
+gmatsumoto-tommasini@mysenca.ca
+2020/11/20
+
+I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+*/
+
 // Workshop 8 - Smart Pointers
 // 2019/11 - Cornel
 
@@ -82,6 +92,12 @@ namespace sdds {
 		}
 
 		// TODO: add a function here to validate the price
+		void validate() {
+			if (m_price<0) {
+				std::string msg = "*** Negative prices are invalid ***";
+				throw msg;
+			}
+		}
 
 		void display(std::ostream& os) const {
 			os << std::setw(FWD) << m_desc

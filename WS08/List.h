@@ -1,3 +1,13 @@
+/*
+Guilherme Matsumoto Tommasini
+167561182
+gmatsumoto-tommasini
+gmatsumoto-tommasini@mysenca.ca
+2020/11/20
+
+I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+*/
+
 #ifndef SDDS_LIST_H
 #define SDDS_LIST_H
 // Workshop 8 - Smart Pointers
@@ -33,6 +43,9 @@ namespace sdds {
 
 		// TODO: Overload the += operator with a raw pointer
 		//       as a second operand.
+		void operator+=(T* obj) {
+			list.push_back(*obj);
+		}
 
 		void display(std::ostream& os) const {
             os << std::fixed << std::setprecision(2);
