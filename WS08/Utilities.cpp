@@ -25,7 +25,6 @@ namespace sdds {
 		List<Product> priceList;
 		// TODO: Add your code here to build a list of products
 		//         using raw pointers
-
 		for (size_t i = 0; i < desc.size(); i++) {
 			bool found = false;
 			for (size_t j = 0; j < price.size() && !found; j++) {
@@ -35,10 +34,29 @@ namespace sdds {
 					temp->validate();
 					priceList += temp; //prints CC [2] from [1]
 					delete temp;
+					temp = nullptr;
 				}
 			}
 		}
 
+		return priceList;
+	}
+
+	List<Product> mergeSmart(const List<Description>& desc, const List<Price>& price) {
+		List<Product> priceList;
+		// TODO: Add your code here to build a list of products
+		//         using smart pointers
+		for (size_t i = 0; i < desc.size(); i++) {
+			bool found = false;
+			for (size_t j = 0; j < price.size() && !found; j++) {
+				if (desc[i].code == price[j].code) {
+					found = true;
+					std::unique_ptr<Product> temp ( new Product(desc[i].desc, price[j].price) ); 
+					temp->validate();
+					priceList += temp ; 
+				}
+			}
+		}
 
 		return priceList;
 	}
