@@ -1,3 +1,13 @@
+/*
+Guilherme Matsumoto Tommasini
+167561182
+gmatsumoto-tommasini
+gmatsumoto-tommasini@mysenca.ca
+2020/11/28
+
+I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+*/
+
 // Workshop 9 - Multi-Threading
 // SecureData.cpp
 
@@ -11,13 +21,14 @@
 using namespace std;
 
 namespace w9 {
-#define nThreads 10
+#define nThreads 4
 
 	void converter(char* t, char key, int n, const Cryptor& c) {
 		for (int i = 0; i < n; i++)
 			t[i] = c(t[i], key);
 	}
 
+	//K = 01001011
 	SecureData::SecureData(const char* file, char key, ostream* pOfs)
 	{
 		ofs = pOfs;
@@ -64,24 +75,46 @@ namespace w9 {
 
 	void SecureData::code(char key)
 	{
-		// TODO (at-home): rewrite this function to use at least two threads
-		//         to encrypt/decrypt the text.
-		//converter(text, key, nbytes, Cryptor());
-		//std::thread threadName(function, function params);
+		//TODO(at - home) : rewrite this function to use at least two threads
+		//	to encrypt / decrypt the text.
+		//	converter(text, key, nbytes, Cryptor());
+		//text is an address to a byte size element (char), in this case, an array of chars
+		//std::thread threadName(function, function params); //thread syntax
+#define ATT2
+		{
+#ifdef PART1
+			/*Part 1*/
+			std::thread t1(converter, text, key, nbytes / 2, Cryptor());
+			std::thread t2(converter, text + nbytes / 2, key, nbytes / 2, Cryptor());
+			t1.join();
+			t2.join();
+#endif
+		} //part 1
+
 		std::thread t[nThreads];
+		using namespace placeholders;
+		auto converterBind = bind(converter, _1, key, nbytes / nThreads, Cryptor());
+
+#ifdef ATT2 //the good version
 		for (int i = 0; i < nThreads; i++) {
-			t[i] = thread(bind(converter,
-				text + nbytes * (i / nThreads), //text is an address to a byte size element (char)
-				key,
-				nbytes * (1 / nThreads),
-				Cryptor()));
+			//auto ptr = text + nbytes * i / nThreads; ///debug
+			t[i] = thread(converterBind, text + nbytes * i / nThreads);
 		}
+#endif
+#ifdef NOBIND			
+		for (int i = 0; i < nThreads; i++) {
+			t[i] = thread(converter,
+				text + nbytes * i / nThreads,
+				key,
+				nbytes / nThreads,
+				Cryptor());
+		}
+#endif
+
 		//threads must join main
 		for (int i = 0; i < nThreads; i++) {
 			t[i].join();
 		}
-
-
 		encoded = !encoded;
 	}
 
@@ -93,7 +126,7 @@ namespace w9 {
 		else
 		{
 			// TODO: open a binary file for writing
-			ofstream binaryFile(file, ios::binary );//see that  | ios::trunc
+			ofstream binaryFile(file, ios::binary);//see that  | ios::trunc
 			if (!binaryFile) {
 				string msg1 = file;
 				string msg = "\n***Error opening file" + msg1 + "***\n";
@@ -109,7 +142,7 @@ namespace w9 {
 
 	void SecureData::restore(const char* file, char key) {
 		// TODO: open binary file for reading
-		ifstream binaryFile(file, ios::binary | ios::in);
+		ifstream binaryFile(file, ios::binary /*| ios::in*/);
 		if (!binaryFile) {
 			string msg1 = file;
 			string msg = "\n***Error opening file" + msg1 + "***\n";
@@ -119,11 +152,11 @@ namespace w9 {
 		// TODO: - allocate memory here for the file content
 		//measuring the file
 		binaryFile.seekg(0, ios::end);
-		this->nbytes = binaryFile.tellg() ;
+		this->nbytes = (int)binaryFile.tellg();
 		if (this->text) {
-			delete[] text;
+			delete[] this->text;
 		}
-		this->text = new char[nbytes+1]; //allocating memory
+		text = new char[nbytes]; //allocating memory
 
 		// TODO: - read the content of the binary file
 		binaryFile.seekg(0); //rewinding stream
