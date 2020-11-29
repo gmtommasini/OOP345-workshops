@@ -13,7 +13,7 @@ I have done all the coding by myself and only copied the code that my professor 
 
 
 #include <memory>
-#include <algorithm>
+//#include <algorithm>
 #include "List.h"
 #include "Element.h"
 #include "Utilities.h"
@@ -30,7 +30,8 @@ namespace sdds {
 			for (size_t j = 0; j < price.size() && !found; j++) {
 				if (desc[i].code == price[j].code) {
 					found = true;
-					Product * temp = new Product(desc[i].desc, price[j].price); //Prints C [1]
+					//Product * temp = new Product(desc[i].desc, price[j].price); 
+					Product* temp (new Product(desc[i].desc, price[j].price)); //Prints C [1]
 					temp->validate();
 					priceList += temp; //prints CC [2] from [1]
 					delete temp;
@@ -38,7 +39,6 @@ namespace sdds {
 				}
 			}
 		}
-
 		return priceList;
 	}
 
